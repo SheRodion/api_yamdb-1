@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from reviews.models import Category, Comment, Genre, Review, Title
+from users.models import User
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -89,3 +90,21 @@ class ReviewSerializer(serializers.ModelSerializer):
                 fields=['title', 'author']
             )
         ]
+
+
+class UserEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+
+class ConfirmationCodeSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    confirmation_code = serializers.CharField(required=True)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'id', 'username', 'role', 'email',
+            'first_name', 'last_name', 'bio'
+        )
