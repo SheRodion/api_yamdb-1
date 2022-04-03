@@ -32,11 +32,6 @@ class User(AbstractUser):
         choices=ROLES,
         default='user'
     )
-    token = models.CharField(
-        _('token'),
-        max_length=128,
-        blank=True
-    )
 
     class Meta:
         ordering = ['id']
