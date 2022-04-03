@@ -92,8 +92,16 @@ class ReviewSerializer(serializers.ModelSerializer):
         ]
 
 
-class UserEmailSerializer(serializers.Serializer):
+class UserSignUpSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
+
+    def validate_username(self, username):
+        if username == 'me':
+            raise serializers.ValidationError(
+                "Использовать имя 'me' в качестве username запрещено."
+            )
+        return username
 
 
 class ConfirmationCodeSerializer(serializers.Serializer):

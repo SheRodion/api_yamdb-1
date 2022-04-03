@@ -16,8 +16,8 @@ from .permissions import AuthorOrReadOnly, IsAdminOrSuperUser
 from .serializers import (CategorySerializer, CommentSerializer,
                           ConfirmationCodeSerializer, GenreSerializer,
                           ReviewSerializer, TitleReadSerializer,
-                          TitleWriteSerializer, UserEmailSerializer,
-                          UserSerializer)
+                          TitleWriteSerializer, UserSerializer,
+                          UserSignUpSerializer)
 
 
 class CategoryViewSet(
@@ -99,7 +99,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def get_confirmation_code(request):
-    serializer = UserEmailSerializer(data=request.data)
+    serializer = UserSignUpSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
     email = serializer.data.get('email')
