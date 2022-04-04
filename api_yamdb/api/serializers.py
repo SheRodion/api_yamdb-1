@@ -1,3 +1,4 @@
+from dataclasses import fields
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
@@ -92,9 +93,10 @@ class ReviewSerializer(serializers.ModelSerializer):
         ]
 
 
-class UserSignUpSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
-    email = serializers.EmailField(required=True)
+class UserSignUpSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email']
 
     def validate_username(self, username):
         if username == 'me':
@@ -104,15 +106,20 @@ class UserSignUpSerializer(serializers.Serializer):
         return username
 
 
-class ConfirmationCodeSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
-    confirmation_code = serializers.CharField(required=True)
+class ConfirmationCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'confirmation_code']
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = (
-            'id', 'username', 'role', 'email',
-            'first_name', 'last_name', 'bio'
-        )
+        fields = [
+            'username',
+            'email',
+            'role',
+            'first_name',
+            'last_name',
+            'bio'
+        ]

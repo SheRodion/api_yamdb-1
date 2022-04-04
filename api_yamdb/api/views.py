@@ -1,3 +1,5 @@
+import re
+import uuid
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.db.models import Avg
@@ -101,23 +103,27 @@ class CommentViewSet(viewsets.ModelViewSet):
 @permission_classes([AllowAny])
 def get_confirmation_code(request):
     serializer = UserSignUpSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-
-    email = serializer.data.get('email')
-    user = User.objects.get_or_create(email=email)
-    confirmation_code = default_token_generator.make_token(user)
-    mail_subject = 'Код подтверждения'
-    message = f'Ваш код подтверждения: {confirmation_code}'
-    send_mail(
-        mail_subject,
-        message,
-        'Yamdb',
-        [email],
-        fail_silently=False,
-    )
-
-    return Response(f'На почту {email} был выслан код подтверждения',
-                    status=status.HTTP_200_OK)
+    if serializer.is_valid(raise_exception=True):
+        email = serializer.data.get('email')
+        username = serializer.data.get('username')
+        confirmation_code = uuid.uuid4()
+        User.objects.create(
+            email=email,
+            username=username,
+            confirmation_code=confirmation_code,
+            is_active=False
+        )
+        mail_subject = 'Код подтверждения'
+        message = f'Ваш код подтверждения: {confirmation_code}'
+        send_mail(
+            mail_subject,
+            message,
+            'Yamdb',
+            [email],
+            fail_silently=False,
+        )
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -126,18 +132,20 @@ def get_jwt_token(request):
     serializer = ConfirmationCodeSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
-    email = serializer.data.get('email')
+    username = serializer.data.get('username')
     confirmation_code = serializer.data.get('confirmation_code')
-    user = get_object_or_404(User, email=email)
+    user = get_object_or_404(User, username=username)
 
-    if default_token_generator.check_token(user, confirmation_code):
+    if user.check_code(confirmation_code):
+        user.is_active = True
+        user.save()
         refresh = RefreshToken.for_user(user)
-        return Response({
-            'Your token': str(refresh.access_token)},
-            status=status.HTTP_200_OK)
+        return Response(
+            {'token': str(refresh.access_token)},
+            status=status.HTTP_200_OK
+        )
 
-    return Response({'confirmation_code': 'Неверный код подтверждения'},
-                    status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -145,13 +153,21 @@ class UserViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
     serializer_class = UserSerializer
     permission_classes = (IsAdminOrSuperUser,)
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['username']
 
     @action(methods=['PATCH', 'GET'], detail=False,
-            permission_classes=(IsAuthenticated,))
+            permission_classes=[IsAuthenticated],
+            url_path='me', url_name='me')
     def me(self, request):
         serializer = UserSerializer(
             request.user, data=request.data, partial=True
         )
+        if request.method == 'PATCH' and request.user.role == 'user':
+            serializer.is_valid(raise_exception=True)
+            serializer.save(role=request.user.role)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
