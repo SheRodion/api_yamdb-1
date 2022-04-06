@@ -1,4 +1,5 @@
 import uuid
+
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
@@ -12,9 +13,8 @@ from reviews.models import Category, Genre, Review, Title
 from users.models import User
 
 from .filters import TitleFilter
-from .permissions import (IsAdminOrSuperUser,
-                          IsAdminPermission, ReadOnlyPermission,
-                          IsAdmin, IsModerator, IsAuthorOrReadOnly)
+from .permissions import (IsAdminPermission, IsAuthorPermission,
+                          IsModeratorPermission, ReadOnlyPermission)
 from .serializers import (CategorySerializer, CommentSerializer,
                           ConfirmationCodeSerializer, GenreSerializer,
                           ReviewSerializer, TitleReadSerializer,
@@ -73,7 +73,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = (
-        IsAdmin | IsModerator | IsAuthorOrReadOnly,
+        IsAdminPermission | IsModeratorPermission | IsAuthorPermission,
     )
 
     def get_queryset(self):
@@ -90,7 +90,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = (
-        IsAdmin | IsModerator | IsAuthorOrReadOnly,
+        IsAdminPermission | IsModeratorPermission | IsAuthorPermission,
     )
 
     def get_queryset(self):
@@ -157,7 +157,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     lookup_field = 'username'
     serializer_class = UserSerializer
-    permission_classes = (IsAdminOrSuperUser,)
+    permission_classes = (IsAdminPermission,)
     filter_backends = [filters.SearchFilter]
     search_fields = ['username']
 
