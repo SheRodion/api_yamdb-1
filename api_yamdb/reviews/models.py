@@ -5,19 +5,20 @@ from users.models import User
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=256, verbose_name='Имя')
+    name = models.CharField(verbose_name='Имя', max_length=256)
     slug = models.SlugField(
+        verbose_name='Индетификатор',
         max_length=50,
-        unique=True,
-        verbose_name='Индетификатор'
+        unique=True
     )
 
     class Meta:
-        ordering = ('name',)
         verbose_name = 'Жанр'
-    
+        ordering = ('name',)
+
     def __str__(self):
         return f'{self.name} {self.name}'
+
 
 class GenreTitle(models.Model):
     genre = models.ForeignKey('Genre', on_delete=models.CASCADE)
@@ -26,24 +27,25 @@ class GenreTitle(models.Model):
     def __str__(self):
         return f'{self.title} {self.genre}'
 
+
 class Category(models.Model):
-    name = models.CharField(max_length=256, verbose_name='Имя')
+    name = models.CharField(verbose_name='Имя', max_length=256)
     slug = models.SlugField(
+        verbose_name='Идентификатор',
         max_length=50,
-        unique=True,
-        verbose_name='Идентификатор'
+        unique=True
     )
 
     class Meta:
-        ordering = ('name',)
         verbose_name = 'Категория'
-    
+        ordering = ('name',)
+
     def __str__(self):
-        return f'{self.name} {self.name}'    
+        return f'{self.name} {self.name}'
 
 
 class Title(models.Model):
-    name = models.CharField(max_length=30, unique=True, verbose_name='Имя')
+    name = models.CharField(verbose_name='Имя', max_length=30, unique=True)
     description = models.TextField(verbose_name='Описание')
     year = models.IntegerField()
     genre = models.ManyToManyField(
@@ -52,18 +54,19 @@ class Title(models.Model):
     )
     category = models.ForeignKey(
         Category,
+        verbose_name='Категория',
         on_delete=models.SET_NULL,
         related_name='category',
-        null=True,
-        verbose_name='Категория'
+        null=True
     )
 
     class Meta:
-        ordering = ('name', 'year',)
         verbose_name = 'Произведения'
+        ordering = ('name', 'year',)
 
     def __str__(self):
-        return f'{self.name}' 
+        return f'{self.name}'
+
 
 class Review(models.Model):
     title = models.ForeignKey(
@@ -96,7 +99,7 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Отзыв'
         verbose_name_plural = 'Отзывы'
-        ordering = ['pub_date']
+        ordering = ('pub_date',)
         constraints = [
             models.UniqueConstraint(
                 fields=['title', 'author'],
@@ -133,7 +136,7 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
-        ordering = ['pub_date']
+        ordering = ('pub_date',)
 
     def __str__(self):
         return self.text
