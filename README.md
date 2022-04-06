@@ -15,9 +15,9 @@
 `
 - Cоздать и активировать виртуальное окружение:
 
-`python3 -m venv venv 
+`python3 -m venv venv
+` 
 
-`
 `source venv/bin/activate
 `
 - Обновить pip до последней версии:
