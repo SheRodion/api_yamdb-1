@@ -6,13 +6,13 @@ from users.models import User
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('name', 'slug')
+        fields = ('name', 'slug',)
         model = Category
 
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('name', 'slug')
+        fields = ('name', 'slug',)
         model = Genre
 
 
@@ -29,7 +29,7 @@ class TitleReadSerializer(serializers.ModelSerializer):
             'description',
             'genre',
             'category',
-            'rating'
+            'rating',
         )
         model = Title
 
@@ -54,7 +54,7 @@ class TitleWriteSerializer(serializers.ModelSerializer):
             'description',
             'genre',
             'category',
-            'rating'
+            'rating',
         )
         model = Title
 
@@ -66,7 +66,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ('id', 'text', 'author', 'pub_date')
+        fields = ('id', 'text', 'author', 'pub_date',)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -76,7 +76,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ('id', 'text', 'author', 'score', 'pub_date')
+        fields = ('id', 'text', 'author', 'score', 'pub_date',)
 
     def validate(self, data):
         if self.context['request'].method != 'POST':
@@ -93,7 +93,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 class UserSignUpSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email']
+        fields = ('username', 'email',)
 
     def validate_username(self, username):
         if username == 'me':
@@ -106,17 +106,17 @@ class UserSignUpSerializer(serializers.ModelSerializer):
 class ConfirmationCodeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'confirmation_code']
+        fields = ('username', 'confirmation_code',)
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = [
+        fields = (
             'username',
             'email',
             'role',
             'first_name',
             'last_name',
-            'bio'
-        ]
+            'bio',
+        )
