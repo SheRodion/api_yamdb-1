@@ -1,6 +1,7 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+from api_yamdb.reviews.validators import validate_year
 from users.models import User
 
 
@@ -45,9 +46,13 @@ class Category(models.Model):
 
 
 class Title(models.Model):
-    name = models.CharField(verbose_name='Имя', max_length=30, unique=True)
-    description = models.TextField(verbose_name='Описание')
-    year = models.IntegerField()
+    name = models.TextField(verbose_name='Имя')
+    year = models.IntegerField(
+        validators=[validate_year],
+        verbose_name='Год выпуска')
+    description = models.TextField(
+        blank=True,
+        verbose_name='Описание')
     genre = models.ManyToManyField(
         Genre,
         related_name='genre'
@@ -63,9 +68,12 @@ class Title(models.Model):
     class Meta:
         verbose_name = 'Произведения'
         ordering = ('name', 'year',)
-
+        
     def __str__(self):
-        return f'{self.name}'
+        return (
+            f'name: {self.name}, '
+            f'year: {self.year}, '
+        )
 
 
 class Review(models.Model):
