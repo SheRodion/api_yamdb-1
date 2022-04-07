@@ -1,7 +1,6 @@
 from django.db import models
-from django.contrib.auth import get_user_model
 
-
+from api_yamdb.reviews.validators import validate_year
 
 
 class Category(models.Model):
@@ -23,11 +22,15 @@ class Genre(models.Model):
 
 
 class Title(models.Model):
-    name = models.CharField(max_length=30, unique=True, verbose_name='Имя')
-    description = models.TextField(verbose_name='Описание')
-    year = models.IntegerField()
+    name = models.TextField(verbose_name='Имя')
+    year = models.IntegerField(
+        validators=[validate_year],
+        verbose_name='Год выпуска')
+    description = models.TextField(
+        blank=True,
+        verbose_name='Описание')
     genre = models.ManyToManyField(
-        'жанр',
+        Genre,
         related_name='genre'
     )
     category = models.ForeignKey(
@@ -42,3 +45,9 @@ class Title(models.Model):
     class Meta:
         ordering = ('name', 'year',)
         verbose_name = 'Произведения'
+        
+    def __str__(self):
+        return (
+            f'name: {self.name}, '
+            f'year: {self.year}, '
+        )
