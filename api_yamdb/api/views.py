@@ -23,35 +23,6 @@ from .serializers import (CategorySerializer, CommentSerializer,
                           UserSignUpSerializer)
 
 
-class CategoryViewSet(
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet
-):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-    permission_classes = (ReadOnlyPermission | IsAdminPermission,)
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
-    filterset_fields = ('name',)
-    search_fields = ('name',)
-    lookup_field = 'slug'
-
-
-class GenreViewSet(
-    mixins.CreateModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet
-):
-    queryset = Genre.objects.all()
-    serializer_class = GenreSerializer
-    permission_classes = (ReadOnlyPermission | IsAdminPermission,)
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
-    filterset_fields = ('name',)
-    search_fields = ('name',)
-    lookup_field = 'slug'
-
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all().annotate(rating=Avg('reviews__score'))
