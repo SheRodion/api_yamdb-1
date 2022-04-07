@@ -34,6 +34,7 @@ class TitleReadSerializer(serializers.ModelSerializer):
             'rating'
         )
         model = Title
+        read_only_fields = ('genre', 'category', 'rating',)
 
 
 class TitleWriteSerializer(serializers.ModelSerializer):
