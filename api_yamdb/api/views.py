@@ -10,11 +10,11 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from reviews.models import Category, Genre, Review, Title
-from .mixins import CustomViewSet
 from users.models import User
 from .filters import TitleFilter
-from .permissions import (IsAdmin, IsAdminOrReadOnly,
-                          IsAdminModeratorOwnerOrReadOnly)
+from .mixins import CustomViewSet
+from .permissions import (IsAdmin, IsAdminModeratorOwnerOrReadOnly,
+                          IsAdminOrReadOnly)
 from .serializers import (CategorySerializer, CommentSerializer,
                           ConfirmationCodeSerializer, GenreSerializer,
                           ReviewSerializer, TitleReadSerializer,
@@ -98,13 +98,14 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes((AllowAny,))
 def get_confirmation_code(request):
     serializer = UserSignUpSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
+
     email = serializer.validated_data.get('email')
     username = serializer.validated_data.get('username')
-    user = User.objects.get_or_create(
+    user, created = User.objects.get_or_create(
         email=email,
         username=username,
     )
@@ -122,7 +123,7 @@ def get_confirmation_code(request):
 
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes((AllowAny,))
 def get_jwt_token(request):
     serializer = ConfirmationCodeSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -151,9 +152,12 @@ class UserViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('username',)
 
-    @action(methods=['PATCH', 'GET'], detail=False,
-            permission_classes=[IsAuthenticated],
-            url_path='me', url_name='me')
+    @action(
+        methods=['PATCH', 'GET'],
+        detail=False,
+        permission_classes=(IsAuthenticated,),
+        url_path='me'
+    )
     def me(self, request):
         serializer = UserSerializer(
             request.user, data=request.data, partial=True
