@@ -92,7 +92,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class UserSignUpSerializer(serializers.Serializer):
-    username = serializers.CharField()
+    username = serializers.CharField(max_length=150)
     email = serializers.EmailField()
 
     def validate_username(self, username):
@@ -104,8 +104,8 @@ class UserSignUpSerializer(serializers.Serializer):
 
 
 class ConfirmationCodeSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    confirmation_code = serializers.CharField()
+    username = serializers.CharField(max_length=150, required=True)
+    confirmation_code = serializers.CharField(max_length=254, required=True)
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -1,9 +1,10 @@
 import datetime as dt
-from xml.dom import ValidationErr
+
+from django.core.exceptions import ValidationError
 
 
 def validate_year(value):
     if value > dt.datetime.now().year:
-        raise ValidationErr(
+        raise ValidationError(
             'Год выпуска превышает текущий!')
     return value

@@ -1,8 +1,8 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from api_yamdb.reviews.validators import validate_year
 from users.models import User
+from .validators import validate_year
 
 
 class Genre(models.Model):
@@ -68,7 +68,7 @@ class Title(models.Model):
     class Meta:
         verbose_name = 'Произведения'
         ordering = ('name', 'year',)
-        
+
     def __str__(self):
         return (
             f'name: {self.name}, '

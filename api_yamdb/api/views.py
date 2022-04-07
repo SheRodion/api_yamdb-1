@@ -164,7 +164,7 @@ class UserViewSet(viewsets.ModelViewSet):
         )
         serializer.is_valid(raise_exception=True)
 
-        if request.method == 'PATCH' and request.user.is_user():
+        if request.method == 'PATCH' and request.user.is_user:
             serializer.save(role=request.user.role)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
