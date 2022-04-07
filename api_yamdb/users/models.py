@@ -5,38 +5,33 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
+class UserRole:
+    USER = 'user'
+    MODERATOR = 'moderator'
+    ADMIN = 'admin'
+
+
 class User(AbstractUser):
     ROLES = (
-        ('user', 'USER'),
-        ('moderator', 'MODERATOR'),
-        ('admin', 'ADMIN')
+        (UserRole.USER, 'USER'),
+        (UserRole.MODERATOR, 'MODERATOR'),
+        (UserRole.ADMIN, 'ADMIN')
     )
 
     email = models.EmailField(
         _('email'),
         max_length=256,
         unique=True,
-        blank=False
-    )
-    password = models.CharField(
-        _('password'),
-        max_length=128,
-        blank=True
     )
     bio = models.TextField(
         _('description'),
-        max_length=512,
         blank=True
     )
     role = models.CharField(
         _('role'),
-        max_length=30,
+        max_length=9,
         choices=ROLES,
-        default='user'
-    )
-    confirmation_code = models.UUIDField(
-        default=uuid.uuid4,
-        editable=False,
+        default=UserRole.USER
     )
 
     class Meta:
@@ -54,12 +49,13 @@ class User(AbstractUser):
         return self.username
 
     @property
+    def is_user(self):
+        return self.role == UserRole.USER
+
+    @property
     def is_admin(self):
-        return self.role == 'admin' or self.is_superuser
+        return self.is_staff or self.is_superuser
 
     @property
     def is_moderator(self):
-        return self.role == 'moderator'
-
-    def check_code(self, code):
-        return self.confirmation_code == code
+        return self.role == UserRole.MODERATOR

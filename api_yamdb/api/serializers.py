@@ -90,10 +90,9 @@ class ReviewSerializer(serializers.ModelSerializer):
         return data
 
 
-class UserSignUpSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'email',)
+class UserSignUpSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    email = serializers.EmailField()
 
     def validate_username(self, username):
         if username == 'me':
@@ -103,10 +102,9 @@ class UserSignUpSerializer(serializers.ModelSerializer):
         return username
 
 
-class ConfirmationCodeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'confirmation_code',)
+class ConfirmationCodeSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    confirmation_code = serializers.CharField()
 
 
 class UserSerializer(serializers.ModelSerializer):
