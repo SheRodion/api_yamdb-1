@@ -47,12 +47,14 @@ class User(AbstractUser):
         return self.username
 
     @property
-    def is_user(self):
-        return self.role == UserRole.USER
+    def is_admin(self):
+        return (self.role == UserRole.ADMIN
+                or self.is_staff
+                or self.is_superuser)
 
     @property
-    def is_admin(self):
-        return self.is_staff or self.is_superuser
+    def is_user(self):
+        return self.role == UserRole.USER
 
     @property
     def is_moderator(self):

@@ -6,22 +6,23 @@ from users.models import User
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('name', 'slug',)
         model = Category
+        fields = ('name', 'slug',)
 
 
 class GenreSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('name', 'slug',)
         model = Genre
+        fields = ('name', 'slug',)
 
 
 class TitleReadSerializer(serializers.ModelSerializer):
-    rating = serializers.IntegerField(read_only=True)
-    genre = GenreSerializer(many=True, read_only=True)
-    category = CategorySerializer(read_only=True)
+    rating = serializers.IntegerField()
+    genre = GenreSerializer(many=True)
+    category = CategorySerializer()
 
     class Meta:
+        model = Title
         fields = (
             'id',
             'name',
@@ -31,7 +32,6 @@ class TitleReadSerializer(serializers.ModelSerializer):
             'category',
             'rating',
         )
-        model = Title
         read_only_fields = ('genre', 'category', 'rating',)
 
 
@@ -48,6 +48,7 @@ class TitleWriteSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
+        model = Title
         fields = (
             'id',
             'name',
@@ -57,7 +58,6 @@ class TitleWriteSerializer(serializers.ModelSerializer):
             'category',
             'rating',
         )
-        model = Title
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -91,9 +91,10 @@ class ReviewSerializer(serializers.ModelSerializer):
         return data
 
 
-class UserSignUpSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=150)
-    email = serializers.EmailField()
+class UserSignUpSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'email',)
 
     def validate_username(self, username):
         if username == 'me':
