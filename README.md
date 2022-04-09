@@ -28,9 +28,24 @@
 
 `pip install -r requirements.txt
 `
+- Добавьте файл .env в котором хранится SECRET_KEY
+
+`cd api_yamdb
+`
+
+`echo "SECRET_KEY=YourSecretKey" > .env
+`
 - Выполнить миграции:
 
+`python3 manage.py makemigrations
+`
+
 `python3 manage.py migrate
+`
+
+- Загрузить тестовые данные из CSV файлов (static/data):
+
+`python3 manage.py load_info
 `
 - Запустить проект:
 

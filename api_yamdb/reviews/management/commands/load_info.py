@@ -96,7 +96,7 @@ list_files = [
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        for filename in list_file:
+        for filename in list_files:
             print(filename)
             path = os.path.join(settings.BASE_DIR, "static/data/") + filename
             with open(path, 'r', encoding='utf-8') as file:
