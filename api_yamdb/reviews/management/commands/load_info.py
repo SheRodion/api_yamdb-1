@@ -1,16 +1,10 @@
 import csv
 import os
-
-from django.core.management.base import BaseCommand
 from django.conf import settings
-from users.models import User
+from django.core.management.base import BaseCommand
 
-from reviews.models import (Category,
-                            Genre,
-                            GenreTitle,
-                            Title,
-                            Comment,
-                            Review)
+from reviews.models import Category, Comment, Genre, GenreTitle, Review, Title
+from users.models import User
 
 
 def category_create(row):
@@ -88,19 +82,22 @@ action = {
     'review.csv': review_create,
     'comments.csv': comment_create,
 }
+list_files = [
+    'category.csv',
+    'genre.csv',
+    'titles.csv',
+    'genre_title.csv',
+    'users.csv',
+    'review.csv',
+    'comments.csv'
+]
 
 
 class Command(BaseCommand):
 
-    def add_arguments(self, parser):
-        parser.add_argument(
-            'filename',
-            nargs='+',
-            type=str
-        )
-
     def handle(self, *args, **options):
-        for filename in options['filename']:
+        for filename in list_file:
+            print(filename)
             path = os.path.join(settings.BASE_DIR, "static/data/") + filename
             with open(path, 'r', encoding='utf-8') as file:
                 reader = csv.reader(file)
