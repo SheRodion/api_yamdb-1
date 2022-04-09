@@ -65,9 +65,14 @@
 - Дитальное описание и примеры работы API проекта представлены в документации: http://127.0.0.1:8000/redoc/ в формате ReDoc. 
 
 ##### Используется:
-- Python >= 3.7,
-- django==2.2.16,
+
+- Python >= 3.7
+- django==2.2.16
+- djangorestframework==3.12.4
+- djangorestframework-simplejwt==5.1.0
+- django-filter==21.1
 - PyJWT==2.1.0
+- python-dotenv==0.20.0
 
 ### Участники:
 
