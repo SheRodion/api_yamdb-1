@@ -82,21 +82,12 @@ action = {
     'review.csv': review_create,
     'comments.csv': comment_create,
 }
-list_files = [
-    'category.csv',
-    'genre.csv',
-    'titles.csv',
-    'genre_title.csv',
-    'users.csv',
-    'review.csv',
-    'comments.csv'
-]
 
 
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        for filename in list_files:
+        for filename in action.keys():
             print(filename)
             path = os.path.join(settings.BASE_DIR, "static/data/") + filename
             with open(path, 'r', encoding='utf-8') as file:

@@ -8,13 +8,14 @@ from .validators import validate_year
 class Genre(models.Model):
     name = models.CharField(verbose_name='Имя', max_length=256)
     slug = models.SlugField(
-        verbose_name='Индетификатор',
+        verbose_name='Идентификатор',
         max_length=50,
         unique=True
     )
 
     class Meta:
         verbose_name = 'Жанр'
+        verbose_name_plural = 'Жанры'
         ordering = ('name',)
 
     def __str__(self):
@@ -39,6 +40,7 @@ class Category(models.Model):
 
     class Meta:
         verbose_name = 'Категория'
+        verbose_name_plural = 'Категории'
         ordering = ('name',)
 
     def __str__(self):
@@ -66,7 +68,8 @@ class Title(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Произведения'
+        verbose_name = 'Произведениие'
+        verbose_name_plural = 'Произведения'
         ordering = ('name', 'year',)
 
     def __str__(self):
