@@ -12,7 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from reviews.models import Category, Genre, Review, Title
 from users.models import User
 from .filters import TitleFilter
-from .mixins import CustomViewSet
+from .mixins import CreateListDestroyViewSet
 from .permissions import (IsAdmin, IsAdminModeratorOwnerOrReadOnly,
                           IsAdminOrReadOnly)
 from .serializers import (CategorySerializer, CommentSerializer,
@@ -22,24 +22,14 @@ from .serializers import (CategorySerializer, CommentSerializer,
                           UserSignUpSerializer)
 
 
-class CategoryViewSet(CustomViewSet):
+class CategoryViewSet(CreateListDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (IsAdminOrReadOnly,)
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
-    filterset_fields = ('name',)
-    search_fields = ('name',)
-    lookup_field = 'slug'
 
 
-class GenreViewSet(CustomViewSet):
+class GenreViewSet(CreateListDestroyViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = (IsAdminOrReadOnly,)
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
-    filterset_fields = ('name',)
-    search_fields = ('name',)
-    lookup_field = 'slug'
 
 
 class TitleViewSet(viewsets.ModelViewSet):
