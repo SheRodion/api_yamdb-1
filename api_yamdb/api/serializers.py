@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 
 from reviews.models import Category, Comment, Genre, Review, Title
 from users.models import User
@@ -91,17 +92,24 @@ class ReviewSerializer(serializers.ModelSerializer):
         return data
 
 
-class UserSignUpSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'email',)
+class UserSignUpSerializer(serializers.Serializer):
+    email = serializers.EmailField(max_length=254, required=True)
+    username = serializers.CharField(max_length=150, required=True)
 
-    def validate_username(self, username):
-        if username == 'me':
+    def validate_username(self, name):
+        if name == 'me':
             raise serializers.ValidationError(
                 "Использовать имя 'me' в качестве username запрещено."
             )
-        return username
+        return name
+
+    class Meta:
+        validators = [
+            UniqueTogetherValidator(
+                queryset=User.objects.all(),
+                fields=['email', 'username']
+            )
+        ]
 
 
 class ConfirmationCodeSerializer(serializers.Serializer):

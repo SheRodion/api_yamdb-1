@@ -95,10 +95,14 @@ def get_confirmation_code(request):
 
     email = serializer.validated_data.get('email')
     username = serializer.validated_data.get('username')
-    user, created = User.objects.get_or_create(
-        email=email,
-        username=username,
-    )
+    try:
+        user, created = User.objects.get_or_create(
+            email=email,
+            username=username,
+        )
+    except Exception:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     confirmation_code = default_token_generator.make_token(user)
     mail_subject = 'Код подтверждения'
     message = f'Ваш код подтверждения: {confirmation_code}'
